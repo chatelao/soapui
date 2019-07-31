@@ -14,7 +14,19 @@
         <repository>
             <id>smartbear-sweden-repository</id>
             <url>http://www.soapui.org/repository/maven2</url>
-        </repository>
+</repository>
+<repository>
+            <id>ibiblio</id>
+            <url>https://maven.ibiblio.org/maven2/</url>
+</repository>
+<repository>
+            <id>Repo1</id>
+            <url>https://repo1.maven.org/maven2/</url>
+</repository>
+<repository>
+            <id>Alfresco</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
+</repository>
     </repositories>
 
     <properties>
