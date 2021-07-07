@@ -1,17 +1,17 @@
 /*
  * SoapUI, Copyright (C) 2004-2019 SmartBear Software
  *
- * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent 
- * versions of the EUPL (the "Licence"); 
- * You may not use this work except in compliance with the Licence. 
- * You may obtain a copy of the Licence at: 
- * 
- * http://ec.europa.eu/idabc/eupl 
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the Licence is 
- * distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
- * express or implied. See the Licence for the specific language governing permissions and limitations 
- * under the Licence. 
+ * Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent
+ * versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+ * distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the Licence for the specific language governing permissions and limitations
+ * under the Licence.
  */
 
 package com.eviware.soapui;
@@ -43,8 +43,9 @@ import com.eviware.soapui.support.listener.SoapUIListenerRegistry;
 import com.eviware.soapui.support.types.StringList;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.ssl.OpenSSL;
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -55,6 +56,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.GeneralSecurityException;
@@ -279,7 +281,7 @@ public class DefaultSoapUICore implements SoapUICore {
                     } catch (Exception e) {
                         log.warn("Wrong password.");
                         JOptionPane.showMessageDialog(null, "Wrong password, creating backup settings file [ "
-                                + settingsFile.getAbsolutePath() + ".bak.xml. ]\nSwitch to default settings.",
+                                        + settingsFile.getAbsolutePath() + ".bak.xml. ]\nSwitch to default settings.",
                                 "Error - Wrong Password", JOptionPane.ERROR_MESSAGE);
                         settingsDocument.save(new File(settingsFile.getAbsolutePath() + ".bak.xml"));
                         throw e;
@@ -355,6 +357,7 @@ public class DefaultSoapUICore implements SoapUICore {
             settings.setBoolean(ProxySettings.AUTO_PROXY, true);
             settings.setBoolean(ProxySettings.ENABLE_PROXY, true);
         }
+        setIfNotSet(SecuritySettings.DISABLE_PROJECT_LOAD_SAVE_SCRIPTS, true);
 
         boolean setWsiDir = false;
         String wsiLocationString = settings.getString(WSISettings.WSI_LOCATION, null);
@@ -489,11 +492,15 @@ public class DefaultSoapUICore implements SoapUICore {
             File log4jconfig = root == null ? new File(logFileName) : new File(new File(getRoot()), logFileName);
             if (log4jconfig.exists()) {
                 System.out.println("Configuring log4j from [" + log4jconfig.getAbsolutePath() + "]");
-                DOMConfigurator.configureAndWatch(log4jconfig.getAbsolutePath(), 5000);
+                ((LoggerContext) LogManager.getContext(false)).setConfigLocation(log4jconfig.toURI());
             } else {
                 URL url = SoapUI.class.getResource("/com/eviware/soapui/resources/conf/soapui-log4j.xml");
                 if (url != null) {
-                    DOMConfigurator.configure(url);
+                    try {
+                        ((LoggerContext) LogManager.getContext(false)).setConfigLocation(url.toURI());
+                    } catch (URISyntaxException e) {
+                        System.err.println("Unable to locate soapui-log4j.xml configuration");
+                    }
                 } else {
                     System.err.println("Missing soapui-log4j.xml configuration");
                 }
@@ -501,7 +508,7 @@ public class DefaultSoapUICore implements SoapUICore {
 
             logIsInitialized = true;
 
-            log = Logger.getLogger(DefaultSoapUICore.class);
+            log = LogManager.getLogger(DefaultSoapUICore.class);
         }
     }
 

@@ -118,7 +118,7 @@
    	    		<ant:pathelement location="${plugin.getDependencyPath('commons-collections:commons-collections')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-lang:commons-lang')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-io:commons-io')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('commons-ssl:not-yet-commons-ssl')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('com.narupley:not-going-to-be-commons-ssl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-cli:commons-cli')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-beanutils:commons-beanutils')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('org.apache.httpcomponents:httpclient')}"/>
@@ -155,7 +155,7 @@
 	       		<ant:pathelement location="${plugin.getDependencyPath('xalan:xalan')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('xerces:xercesImpl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('wss4j:wss4j')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('bouncycastle:bcprov')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('org.bouncycastle:bcprov-jdk15on')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('jtidy:jtidy')}"/>
    	    		<ant:pathelement location="${plugin.getDependencyPath('javax.jms:jms')}"/>
 				<ant:pathelement location="${plugin.getDependencyPath('hermesjms:hermes')}"/>
@@ -277,7 +277,7 @@
    	    		<ant:pathelement location="${plugin.getDependencyPath('commons-collections:commons-collections')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-lang:commons-lang')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-io:commons-io')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('commons-ssl:not-yet-commons-ssl')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('com.narupley:not-going-to-be-commons-ssl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-cli:commons-cli')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-beanutils:commons-beanutils')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('org.apache.httpcomponents:httpclient')}"/>
@@ -314,7 +314,7 @@
 	       		<ant:pathelement location="${plugin.getDependencyPath('xalan:xalan')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('xerces:xercesImpl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('wss4j:wss4j')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('bouncycastle:bcprov')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('org.bouncycastle:bcprov-jdk15on')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('jtidy:jtidy')}"/>
    	    		<ant:pathelement location="${plugin.getDependencyPath('javax.jms:jms')}"/>
 				<ant:pathelement location="${plugin.getDependencyPath('hermesjms:hermes')}"/>
@@ -391,7 +391,7 @@
    	    		<ant:pathelement location="${plugin.getDependencyPath('commons-collections:commons-collections')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-lang:commons-lang')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-io:commons-io')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('commons-ssl:not-yet-commons-ssl')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('com.narupley:not-going-to-be-commons-ssl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-cli:commons-cli')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-beanutils:commons-beanutils')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('org.apache.httpcomponents:httpclient')}"/>
@@ -428,7 +428,7 @@
 	       		<ant:pathelement location="${plugin.getDependencyPath('xalan:xalan')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('xerces:xercesImpl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('wss4j:wss4j')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('bouncycastle:bcprov')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('org.bouncycastle:bcprov-jdk15on')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('jtidy:jtidy')}"/>
    	    		<ant:pathelement location="${plugin.getDependencyPath('javax.jms:jms')}"/>
 				<ant:pathelement location="${plugin.getDependencyPath('hermesjms:hermes')}"/>
@@ -560,7 +560,7 @@
    	    		<ant:pathelement location="${plugin.getDependencyPath('commons-collections:commons-collections')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-lang:commons-lang')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-io:commons-io')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('commons-ssl:not-yet-commons-ssl')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('com.narupley:not-going-to-be-commons-ssl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-cli:commons-cli')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('commons-beanutils:commons-beanutils')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('org.apache.httpcomponents:httpclient')}"/>
@@ -597,7 +597,7 @@
 	       		<ant:pathelement location="${plugin.getDependencyPath('xalan:xalan')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('xerces:xercesImpl')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('wss4j:wss4j')}"/>
-	       		<ant:pathelement location="${plugin.getDependencyPath('bouncycastle:bcprov')}"/>
+	       		<ant:pathelement location="${plugin.getDependencyPath('org.bouncycastle:bcprov-jdk15on')}"/>
 	       		<ant:pathelement location="${plugin.getDependencyPath('jtidy:jtidy')}"/>
    	    		<ant:pathelement location="${plugin.getDependencyPath('javax.jms:jms')}"/>
 				<ant:pathelement location="${plugin.getDependencyPath('hermesjms:hermes')}"/>

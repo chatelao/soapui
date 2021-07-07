@@ -14,15 +14,16 @@
  * under the Licence. 
  */
 
-package com.eviware.soapui.plugins.auto;
+package com.eviware.soapui.ui.navigator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.eviware.soapui.model.tree.SoapUITreeNode;
 
-@AutoFactory
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface PluginDiscoveryMethod {
+/**
+ * Handler for Navigator-events
+ *
+ * @author Ole.Matzura
+ */
+
+public interface NavigatorListener {
+    public void nodeSelected(SoapUITreeNode treeNode);
 }

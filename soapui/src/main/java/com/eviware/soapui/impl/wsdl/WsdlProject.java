@@ -76,6 +76,7 @@ import com.eviware.soapui.model.testsuite.TestStep;
 import com.eviware.soapui.model.testsuite.TestSuite;
 import com.eviware.soapui.model.testsuite.TestSuite.TestSuiteRunType;
 import com.eviware.soapui.settings.ProjectSettings;
+import com.eviware.soapui.settings.SecuritySettings;
 import com.eviware.soapui.settings.UISettings;
 import com.eviware.soapui.settings.WsdlSettings;
 import com.eviware.soapui.support.SoapUIException;
@@ -89,7 +90,8 @@ import com.eviware.soapui.support.scripting.SoapUIScriptEngineRegistry;
 import com.eviware.soapui.support.types.StringToObjectMap;
 import com.eviware.soapui.support.xml.XmlUtils;
 import org.apache.commons.ssl.OpenSSL;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
@@ -131,12 +133,17 @@ import static com.eviware.soapui.impl.wsdl.WsdlProject.ProjectEncryptionStatus.N
 
 public class WsdlProject extends AbstractTestPropertyHolderWsdlModelItem<ProjectConfig> implements Project,
         PropertyExpansionContainer, PropertyChangeListener, TestRunnable {
+    /*???*/ // %s - the project name
+    private final static String LOAD_SCRYPT_EXECUTION_WARNING_MESSAGE = "In project '%s' we have detected Load script that may contain malicious code, if you do not want to receive this message please change the setting in preferences.";
+    /*???*/ // %s - the project name
+    private final static String SAVE_SCRYPT_EXECUTION_WARNING_MESSAGE = "In project '%s' we have detected Save script that may contain malicious code, if you do not want to receive this message please change the setting in preferences.";
+
     public final static String AFTER_LOAD_SCRIPT_PROPERTY = WsdlProject.class.getName() + "@setupScript";
     public final static String BEFORE_SAVE_SCRIPT_PROPERTY = WsdlProject.class.getName() + "@tearDownScript";
     public final static String RESOURCE_ROOT_PROPERTY = WsdlProject.class.getName() + "@resourceRoot";
     public static final String ICON_NAME = "/project.png";
     public static final SoapUIVersionInfo VERSION_IN_READY_API_PROJECT = new SoapUIVersionInfo("6.0.0");
-    protected final static Logger log = Logger.getLogger(WsdlProject.class);
+    protected final static Logger log = LogManager.getLogger(WsdlProject.class);
     private static final String XML_FILE_TYPE = "XML Files (*.xml)";
     private static final String XML_EXTENSION = ".xml";
     protected String path;
@@ -1503,6 +1510,11 @@ public class WsdlProject extends AbstractTestPropertyHolderWsdlModelItem<Project
             return null;
         }
 
+        if (isLoadSaveScriptsDisabled()) {
+            log.warn(String.format(LOAD_SCRYPT_EXECUTION_WARNING_MESSAGE, getName()));
+            return null;
+        }
+
         if (afterLoadScriptEngine == null) {
             afterLoadScriptEngine = SoapUIScriptEngineRegistry.create(this);
             afterLoadScriptEngine.setScript(script);
@@ -1517,6 +1529,11 @@ public class WsdlProject extends AbstractTestPropertyHolderWsdlModelItem<Project
     public Object runBeforeSaveScript() throws Exception {
         String script = getBeforeSaveScript();
         if (StringUtils.isNullOrEmpty(script)) {
+            return null;
+        }
+
+        if (isLoadSaveScriptsDisabled()) {
+            log.warn(String.format(SAVE_SCRYPT_EXECUTION_WARNING_MESSAGE, getName()));
             return null;
         }
 
@@ -2036,5 +2053,9 @@ public class WsdlProject extends AbstractTestPropertyHolderWsdlModelItem<Project
             }
         }
         return false;
+    }
+
+    private boolean isLoadSaveScriptsDisabled() {
+        return SoapUI.getSoapUICore().getSettings().getBoolean(SecuritySettings.DISABLE_PROJECT_LOAD_SAVE_SCRIPTS);
     }
 }
