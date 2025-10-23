@@ -54,7 +54,7 @@ public class OpenAPI3ImporterTest {
         assertNotNull(request.getRequestContent());
         assertTrue(request.getRequestContent().contains("\"name\" : \"string\""));
         assertTrue(request.getRequestContent().contains("\"photoUrls\" : [ \"string\" ]"));
-        assertEquals(6, updatePetMethod.getRepresentations(RestRepresentation.Type.RESPONSE, null).length);
+        assertEquals(4, updatePetMethod.getRepresentations(RestRepresentation.Type.RESPONSE, null).length);
         assertNotNull(updatePetMethod.getRepresentations(RestRepresentation.Type.RESPONSE, null)[0].getStatus());
 
         RestResource petByIdResource = service.getResourceByFullPath("/pet/{petId}");
@@ -98,8 +98,9 @@ public class OpenAPI3ImporterTest {
         assertNotNull(request);
         assertEquals("application/json", request.getMediaType());
         assertNotNull(request.getRequestContent());
-        assertTrue(request.getRequestContent().length() > 2);
-        assertEquals(6, updatePetMethod.getRepresentations(RestRepresentation.Type.RESPONSE, null).length);
+        assertTrue(request.getRequestContent().contains("\"name\" : \"string\""));
+        assertTrue(request.getRequestContent().contains("\"photoUrls\" : [ \"string\" ]"));
+        assertEquals(4, updatePetMethod.getRepresentations(RestRepresentation.Type.RESPONSE, null).length);
         assertNotNull(updatePetMethod.getRepresentations(RestRepresentation.Type.RESPONSE, null)[0].getStatus());
 
         RestResource petByIdResource = service.getResourceByFullPath("/pet/{petId}");
