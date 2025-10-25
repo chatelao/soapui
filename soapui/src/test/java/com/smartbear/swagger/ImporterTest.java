@@ -87,6 +87,25 @@ public class ImporterTest {
     }
 
     @Test
+    public void testImportPsd2Api() throws Exception {
+        // Given
+        WsdlProject project = new WsdlProject();
+        OpenAPI3Importer importer = new OpenAPI3Importer(project);
+        String filePath = "/psd2-api_v1.3.15-2025-08-21.openapi.yaml";
+        URL resource = getClass().getResource(filePath);
+        assertNotNull("Could not find swagger definition", resource);
+        File file = new File(resource.toURI());
+        String swaggerDefinitionPath = file.getAbsolutePath();
+
+        // When
+        RestService[] services = importer.importSwagger(swaggerDefinitionPath);
+
+        // Then
+        assertNotNull(services);
+        assertTrue(services.length > 0);
+    }
+
+    @Test
     public void testImportLargeSwaggerDefinition() throws Exception {
         // Given
         WsdlProject project = new WsdlProject();
