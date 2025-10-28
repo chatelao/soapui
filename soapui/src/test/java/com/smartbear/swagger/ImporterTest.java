@@ -37,7 +37,7 @@ public class ImporterTest {
         File[] testFiles = directory.listFiles();
         if (testFiles != null) {
             for (File file : testFiles) {
-                if (file.isFile()) {
+                if (file.isFile() && (file.getName().endsWith(".json") || file.getName().endsWith(".yaml") || file.getName().endsWith(".yml"))) {
                     files.add(new Object[]{file});
                 }
             }
@@ -46,7 +46,7 @@ public class ImporterTest {
     }
 
     @Test
-    public void testImportSwaggerFile() throws IOException, SoapUIException, XmlException {
+    public void testImportFile() throws IOException, SoapUIException, XmlException {
         WsdlProject project = new WsdlProject();
         RestService[] services;
 
@@ -59,27 +59,6 @@ public class ImporterTest {
         }
 
         assertNotNull("Import failed for " + swaggerFile.getName(), services);
-        assertTrue("No services imported for " + swaggerFile.getName(), services.length > 0);
-    }
-
-    @Test
-    public void testImportYamlFile() throws IOException, SoapUIException, XmlException {
-        if (!swaggerFile.getName().endsWith(".yaml") && !swaggerFile.getName().endsWith(".yml")) {
-            return;
-        }
-
-        WsdlProject project = new WsdlProject();
-        RestService[] services;
-
-        if (SwaggerUtils.isOpenApi(swaggerFile.getAbsolutePath())) {
-            OpenAPI3Importer importer = new OpenAPI3Importer(project);
-            services = importer.importSwagger(swaggerFile.getAbsolutePath());
-        } else {
-            Swagger2Importer importer = new Swagger2Importer(project);
-            services = importer.importSwagger(swaggerFile.getAbsolutePath());
-        }
-
-        assertNotNull("YAML Import failed for " + swaggerFile.getName(), services);
         assertTrue("No services imported for " + swaggerFile.getName(), services.length > 0);
     }
 }

@@ -7,26 +7,18 @@ import com.eviware.soapui.impl.rest.RestRequestInterface;
 import com.eviware.soapui.impl.rest.RestResource;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.rest.RestServiceFactory;
+import com.eviware.soapui.impl.rest.mock.RestMockAction;
+import com.eviware.soapui.impl.rest.mock.RestMockResponse;
 import com.eviware.soapui.impl.rest.support.RestParameter;
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder;
-import com.eviware.soapui.impl.support.MediaTypeUtils;
 import com.eviware.soapui.impl.wsdl.MutableTestPropertyHolder;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.eviware.soapui.impl.wsdl.support.PathUtils;
 import com.eviware.soapui.support.StringUtils;
-import com.eviware.soapui.support.xml.XmlUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import io.swagger.util.Json;
-import io.swagger.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.media.MediaType;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
@@ -40,30 +32,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 
 public class OpenAPI31Importer implements SwaggerImporter {
-    private static final String SAMPLE_GENERATION_FAILED_MESSAGE = "Failed to create the sample. The '%s' media type is incorrect.";
-
     private static Logger logger = LogManager.getLogger(OpenAPI31Importer.class);
 
-    private static ObjectMapper yamlMapper;
-    private static ObjectMapper jsonMapper;
     private final WsdlProject project;
     private final String defaultMediaType;
     private OpenAPI openApi;
-
-    static {
-        yamlMapper = Yaml.mapper();
-        jsonMapper = Json.mapper();
-        SimpleModule simpleModule = new SimpleModule();
-
-        yamlMapper.registerModule(simpleModule);
-        jsonMapper.registerModule(simpleModule);
-    }
 
     public OpenAPI31Importer(String defaultMediaType) {
         this(null, defaultMediaType);
@@ -247,11 +225,8 @@ public class OpenAPI31Importer implements SwaggerImporter {
                 representation.setMediaType(mediaType);
                 RestRequest request = method.addNewRequest("Request " + (method.getRequestList().size() + 1));
                 request.setMediaType(mediaType);
-                if (mediaType.toLowerCase().contains("json")) {
-                    request.setRequestContent("{}");
-                } else if (mediaType.toLowerCase().contains("xml")) {
-                    request.setRequestContent("<root/>");
-                }
+                String content = ExampleGenerator.generateExample(mediaTypeObject.getSchema(), mediaType);
+                request.setRequestContent(content);
             });
         }
     }
@@ -294,6 +269,18 @@ public class OpenAPI31Importer implements SwaggerImporter {
                     statusList.add(responseCode);
                 }
                 representation.setStatus(statusList);
+                String content = ExampleGenerator.generateExample(mediaTypeObject.getSchema(), mediaType);
+                if (StringUtils.hasContent(content)) {
+                    final String finalContent = content;
+                    project.getRestMockServiceList().forEach(mockService -> {
+                        RestMockAction mockAction = (RestMockAction) mockService.getMockOperationByName(method.getName());
+                        if (mockAction != null) {
+                            RestMockResponse mockResponse = mockAction.addNewMockResponse("Response from example");
+                            mockResponse.setResponseContent(finalContent);
+                            mockResponse.setMediaType(mediaType);
+                        }
+                    });
+                }
             });
         } else {
             RestRepresentation representation = method.addNewRepresentation(RestRepresentation.Type.RESPONSE);
@@ -305,46 +292,6 @@ public class OpenAPI31Importer implements SwaggerImporter {
             representation.setStatus(statusList);
             representation.setMediaType(defaultMediaType);
         }
-    }
-
-    private String serializeExample(String mediaType, Object example) {
-        String sampleValue = null;
-        ObjectMapper mapper = null;
-
-        String subtype = "";
-        try {
-            subtype = MediaTypeUtils.getSubtype(mediaType);
-            String suffix = MediaTypeUtils.getSuffix(mediaType);
-            if (StringUtils.hasContent(suffix)) {
-                subtype = suffix;
-            }
-        } catch (IllegalArgumentException e) {
-            logger.warn(String.format(SAMPLE_GENERATION_FAILED_MESSAGE, mediaType));
-        }
-
-        switch (subtype.toLowerCase()) {
-            case "xml":
-                sampleValue = example.toString();
-                break;
-            case "yaml":
-                mapper = yamlMapper;
-                break;
-            case "json":
-                mapper = jsonMapper;
-                break;
-            case "plain":
-                sampleValue = example.toString();
-                break;
-        }
-
-        if (mapper != null) {
-            try {
-                sampleValue = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(example);
-            } catch (JsonProcessingException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return sampleValue;
     }
 
     private RestService createRestService(OpenAPI openApi, String url) {
