@@ -20,11 +20,6 @@ import com.eviware.soapui.support.xml.XmlUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import io.swagger.inflector.examples.ExampleBuilder;
-import io.swagger.inflector.examples.XmlExampleSerializer;
-import io.swagger.inflector.examples.models.Example;
-import io.swagger.inflector.examples.models.ObjectExample;
-import io.swagger.inflector.processors.JsonNodeExampleSerializer;
 import io.swagger.models.ComposedModel;
 import io.swagger.models.Info;
 import io.swagger.models.Model;
@@ -70,7 +65,6 @@ public class Swagger2Importer implements SwaggerImporter {
         yamlMapper = Yaml.mapper();
         jsonMapper = Json.mapper();
         SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(new JsonNodeExampleSerializer());
 
         yamlMapper.registerModule(simpleModule);
         jsonMapper.registerModule(simpleModule);
@@ -301,9 +295,7 @@ public class Swagger2Importer implements SwaggerImporter {
                 if (bodyParameterModel != null) {
                     // From example property
                     if (bodyParameterModel.getExample() != null) {
-                        ObjectExample example = new ObjectExample();
-                        example.setExample(bodyParameterModel.getExample());
-                        String content = serializeExample(mediaType, example);
+                        String content = bodyParameterModel.getExample().toString();
                         if (StringUtils.hasContent(content)) {
                             RestRequest request = method.addNewRequest("Request " + (method.getRequestList().size() + 1));
                             request.setMediaType(mediaType);
@@ -364,9 +356,7 @@ public class Swagger2Importer implements SwaggerImporter {
 
         if (responseExamples != null && !responseExamples.isEmpty()) {
             responseExamples.forEach((mediaType, example) -> {
-                ObjectExample objectExample = new ObjectExample();
-                objectExample.setExample(example);
-                attachResponse(responseCode, method, mediaType, objectExample, response);
+                attachResponse(responseCode, method, mediaType, example.toString(), response);
             });
         } else {
             List<String> produces = operation.getProduces();
@@ -382,7 +372,7 @@ public class Swagger2Importer implements SwaggerImporter {
         }
     }
 
-    private void attachResponse(String responseCode, RestMethod method, String mediaType, ObjectExample example, Response response) {
+    private void attachResponse(String responseCode, RestMethod method, String mediaType, String example, Response response) {
         RestRepresentation representation = method.addNewRepresentation(RestRepresentation.Type.RESPONSE);
         representation.setMediaType(mediaType);
         List<String> statusList = new ArrayList<>();
@@ -394,7 +384,7 @@ public class Swagger2Importer implements SwaggerImporter {
         String content = "";
 
         if (example != null) {
-            content = serializeExample(mediaType, example);
+            content = example;
         } else if (response.getSchema() != null) {
             if (mediaType.toLowerCase().contains("xml")) {
                 content = createSampleXmlRequestFromProperty(response.getSchema());
@@ -501,7 +491,7 @@ public class Swagger2Importer implements SwaggerImporter {
         return "<root/>";
     }
 
-    private String serializeExample(String mediaType, Example output) {
+    private String serializeExample(String mediaType, Object example) {
         String sampleValue = null;
         ObjectMapper mapper = null;
 
@@ -518,10 +508,7 @@ public class Swagger2Importer implements SwaggerImporter {
 
         switch (subtype.toLowerCase()) {
             case "xml":
-                sampleValue = XmlUtils.prettyPrintXml(new XmlExampleSerializer().serialize(output));
-                if (!XmlUtils.seemsToBeXml(sampleValue)) {
-                    return "";
-                }
+                sampleValue = example.toString();
                 break;
             case "yaml":
                 mapper = yamlMapper;
@@ -530,23 +517,16 @@ public class Swagger2Importer implements SwaggerImporter {
                 mapper = jsonMapper;
                 break;
             case "plain":
-                if (!(output instanceof ObjectExample)) {
-                    sampleValue = output.asString();
-                }
+                sampleValue = example.toString();
                 break;
         }
 
         if (mapper != null) {
             try {
-                Object valueToSerialize = output;
-                if (output instanceof ObjectExample) {
-                    valueToSerialize = ((ObjectExample) output).getExample();
-                }
-                sampleValue = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(valueToSerialize);
+                sampleValue = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(example);
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage(), e);
             }
-
         }
         return sampleValue;
     }

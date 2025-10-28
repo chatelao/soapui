@@ -18,11 +18,6 @@ import com.eviware.soapui.support.xml.XmlUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import io.swagger.inflector.examples.ExampleBuilder;
-import io.swagger.inflector.examples.XmlExampleSerializer;
-import io.swagger.inflector.examples.models.Example;
-import io.swagger.inflector.examples.models.ObjectExample;
-import io.swagger.inflector.processors.JsonNodeExampleSerializer;
 import io.swagger.util.Json;
 import io.swagger.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -65,7 +60,6 @@ public class OpenAPI31Importer implements SwaggerImporter {
         yamlMapper = Yaml.mapper();
         jsonMapper = Json.mapper();
         SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(new JsonNodeExampleSerializer());
 
         yamlMapper.registerModule(simpleModule);
         jsonMapper.registerModule(simpleModule);
@@ -313,7 +307,7 @@ public class OpenAPI31Importer implements SwaggerImporter {
         }
     }
 
-    private String serializeExample(String mediaType, Example output) {
+    private String serializeExample(String mediaType, Object example) {
         String sampleValue = null;
         ObjectMapper mapper = null;
 
@@ -330,10 +324,7 @@ public class OpenAPI31Importer implements SwaggerImporter {
 
         switch (subtype.toLowerCase()) {
             case "xml":
-                sampleValue = XmlUtils.prettyPrintXml(new XmlExampleSerializer().serialize(output));
-                if (!XmlUtils.seemsToBeXml(sampleValue)) {
-                    return "";
-                }
+                sampleValue = example.toString();
                 break;
             case "yaml":
                 mapper = yamlMapper;
@@ -342,15 +333,13 @@ public class OpenAPI31Importer implements SwaggerImporter {
                 mapper = jsonMapper;
                 break;
             case "plain":
-                if (!(output instanceof ObjectExample)) {
-                    sampleValue = output.asString();
-                }
+                sampleValue = example.toString();
                 break;
         }
 
         if (mapper != null) {
             try {
-                sampleValue = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(output);
+                sampleValue = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(example);
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage(), e);
             }
