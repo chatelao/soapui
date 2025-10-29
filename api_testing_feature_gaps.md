@@ -160,9 +160,9 @@ This section provides a high-level analysis of the feasibility of implementing t
 
 The API testing tools that are currently on the market provide a solid foundation for testing APIs. However, they are still missing some important features that could significantly improve the testing process. By adding the features discussed in a document like this, API testing tools could become even more powerful and effective, which would lead to better outcomes for developers, QA engineers, and end users.
 
-## Competitive Analysis: SoapUI OS vs. ReadyAPI vs. Postman
+## Competitive Analysis: SoapUI OS vs. Competitors
 
-While the previous sections of this document discuss general feature gaps in API testing tools, this section provides a direct comparison of SoapUI Open Source with its commercial counterpart, ReadyAPI, and its main competitor, Postman.
+This section provides a direct comparison of SoapUI Open Source with its main competitors.
 
 ### SoapUI Open Source vs. ReadyAPI
 
@@ -190,3 +190,85 @@ Postman is a popular API testing tool that is known for its user-friendly interf
 | **REST API Support**| Mock server, automated documentation generation | Basic REST API support |
 | **GraphQL Support**| Built-in support for GraphQL | Not available |
 | **Automation** | Integrated CI/CD automation with minimal scripting | Requires Groovy scripting |
+| **AI-Powered Features** | AI-powered test generation and debugging | Not available |
+
+### SoapUI Open Source vs. Katalon Studio
+
+Katalon Studio is an all-in-one test automation platform that supports web, API, mobile, and desktop testing.
+
+| Feature Area | Katalon Studio | SoapUI Open Source |
+| --- | --- | --- |
+| **User Experience** | Modern, intuitive interface | Outdated and complex interface |
+| **All-in-One Platform** | Supports web, API, mobile, and desktop testing | Primarily focused on API testing |
+| **AI-Powered Features** | AI-powered test generation and healing | Not available |
+| **CI/CD Integration** | Seamless integration with CI/CD pipelines | Requires custom scripting |
+
+### SoapUI Open Source vs. JMeter
+
+JMeter is an open-source tool that is primarily used for performance and load testing.
+
+| Feature Area | JMeter | SoapUI Open Source |
+| --- | --- | --- |
+| **Performance Testing** | Advanced performance and load testing features | Basic load testing |
+| **Extensibility** | Highly extensible with a wide range of plugins | Limited extensibility |
+| **Protocol Support** | Supports a wider range of protocols | Primarily focused on SOAP and REST |
+
+### SoapUI Open Source vs. Insomnia
+
+Insomnia is a popular open-source API client with a focus on modern, collaborative workflows.
+
+| Feature Area | Insomnia | SoapUI Open Source |
+| --- | --- | --- |
+| **User Experience** | Modern, intuitive interface | Outdated and complex interface |
+| **Collaboration** | Real-time collaboration and team workspaces | No built-in collaboration features |
+| **Open Source** | Free and open-source with a generous free tier | Open source |
+
+### SoapUI Open Source vs. Hoppscotch
+
+Hoppscotch is a lightweight, web-based API testing tool that is known for its speed and ease of use.
+
+| Feature Area | Hoppscotch | SoapUI Open Source |
+| --- | --- | --- |
+| **User Experience** | Modern, web-based interface | Outdated and complex interface |
+| **Collaboration** | Real-time collaboration features | No built-in collaboration features |
+| **AI-Powered Features** | AI-powered assistance for test creation | Not available |
+
+### SoapUI Open Source vs. REST-Assured
+
+REST-Assured is a Java library for testing REST services.
+
+| Feature Area | REST-Assured | SoapUI Open Source |
+| --- | --- | --- |
+| **Testing Approach** | Code-based testing in Java | GUI-based testing |
+| **Flexibility** | Highly flexible and customizable | Less flexible |
+| **Target Audience** | Developers | Developers and QA engineers |
+
+### SoapUI Open Source vs. Karate DSL
+
+Karate is an open-source tool that combines API test-automation, mocks, performance-testing, and even UI automation into a single, unified framework.
+
+| Feature Area | Karate DSL | SoapUI Open Source |
+| --- | --- | --- |
+| **Unified Framework** | Combines API, UI, performance, and mock testing | Primarily focused on API testing |
+| **BDD Syntax** | Language-neutral BDD syntax | No built-in BDD support |
+| **Ease of Use** | Easy for non-programmers to use | Requires technical expertise |
+
+### SoapUI Open Source vs. Apidog
+
+Apidog is an all-in-one API platform that streamlines the entire API lifecycle.
+
+| Feature Area | Apidog | SoapUI Open Source |
+| --- | --- | --- |
+| **All-in-One Platform** | Covers the entire API lifecycle from design to documentation | Primarily focused on API testing |
+| **Collaboration** | Strong focus on team collaboration | No built-in collaboration features |
+| **AI-Powered Features** | AI-powered test generation and debugging | Not available |
+
+### SoapUI Open Source vs. Testsigma
+
+Testsigma is an AI-powered, agentic test automation platform that covers the entire testing lifecycle.
+
+| Feature Area | Testsigma | SoapUI Open Source |
+| --- | --- | --- |
+| **AI-Powered Automation** | Agentic approach to test automation | No AI-powered features |
+| **Unified Platform** | Supports web, mobile, API, and ERP testing | Primarily focused on API testing |
+| **Ease of Use** | No-code test automation | Requires technical expertise |
